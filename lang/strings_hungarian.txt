@@ -1,0 +1,4 @@
+<?php
+$s_plugin_Button_name = 'Gomb';
+$s_plugin_Button_config = 'Gomb beállítások';
+$s_plugin_Button_buttons = 'Külső oldalak hívása (JSON {"gomb név": "url"})';

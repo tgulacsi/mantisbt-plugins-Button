@@ -25,7 +25,7 @@ class ButtonPlugin extends MantisPlugin {
 
 	function config() {
 		return array(
-			'buttons' => array('Dokumentáció' => 'http://unowebprd:10800/doku?bug_id={id}&reporter={reporter}&handler={handler}&summary={summary}'),
+			'buttons' => '{"Example button": "http://example.com/doku?bug_id={id}&reporter={reporter}&handler={handler}&summary={summary}"}',
 		);
 	}
 
@@ -42,21 +42,23 @@ class ButtonPlugin extends MantisPlugin {
 		$t_bug = bug_row_to_object( bug_cache_row($p_bug_id) );
 
 		$t_needle = array(
-			'{id}', 
-			'{reporter}', 
-			'{handler}', 
+			'{id}',
+			'{reporter}',
+			'{handler}',
 			'{summary}'
 		);
 		$t_repl = array(
-			$t_bug->id, 
+			$t_bug->id,
 			urlencode(user_get_username($t_bug->reporter_id)),
 			urlencode(user_get_username($t_bug->handler_id)),
 			urlencode($t_bug->summary)
 		);
-		foreach( plugin_config_get( 'buttons', array() ) as $t_name => $t_url ) {
+		print('<div class="widget-body"><div class="widget-toolbox padding-8 clearfix noprint"><div class="btn-group pull-left">');
+		foreach( json_decode(plugin_config_get( 'buttons', '{}' )) as $t_name => $t_url ) {
 			$t_url = str_replace($t_needle, $t_repl, $t_url);
-			print( '<a href="' . $t_url . '">' . $t_name . '</a>' );
+			print( '<a class="btn btn-primary btn-white btn-round btn-sm" href="' . $t_url . '" target="_blank">' . $t_name . '</a>' );
 		}
+		print('</div></div>');
 		return;
 	}
 

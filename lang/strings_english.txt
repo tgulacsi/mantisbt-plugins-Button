@@ -1,0 +1,4 @@
+<?php
+$s_plugin_Button_name = 'Button';
+$s_plugin_Button_config = 'Button configuration';
+$s_plugin_Button_buttons = 'Buttons to call webhooks (JSON {"button name": "url"})';
