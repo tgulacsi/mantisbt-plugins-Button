@@ -25,26 +25,39 @@ class ButtonPlugin extends MantisPlugin {
 
 	function config() {
 		return array(
-			'buttons' => array(),
+			'buttons' => array('Dokumentáció' => 'http://unowebprd:10800/doku?bug_id={id}&reporter={reporter}&handler={handler}&summary={summary}'),
 		);
 	}
 
 	function hooks() {
 		return array(
-			'EVENT_VIEW_BUG_AFTER_DETAILS' => 'view_bug_buttons',
+			'EVENT_VIEW_BUG_DETAILS' => 'view_bug_buttons',
 		);
 	}
 
-	function view_bug_buttons($p_event, $p_params = NULL) {
-		log_event( LOG_EMAIL_RECIPIENT, "event=$p_event params=".var_export($p_params, true) );
-		#require_once( MANTIS_CORE . '/database_api.php' );
-		#require_once( MANTIS_CORE . '/user_api.php' );
-		#$t_query = 'SELECT user_id
-		                #FROM {bug_file}
-		                #WHERE id=' . db_param();
-		#$t_db_result = db_query( $t_query, array( $p_attachment['id'] ), 1 );
-		#$t_name =  user_get_name( db_result( $t_db_result ) );
-		return ' <span class="underline"><pre>' . $var_export($p_params, true) . '</pre></span>';
+	function view_bug_buttons($p_event, $p_bug_id, $p_params = NULL) {
+		log_event( LOG_EMAIL_RECIPIENT, "event=$p_event bug_id=".var_export($p_bug_id, true)." params=".var_export($p_params, true) );
+		require_once( MANTIS_CORE . '/bug_api.php' );
+		require_once( MANTIS_CORE . '/user_api.php' );
+		$t_bug = bug_row_to_object( bug_cache_row($p_bug_id) );
+
+		$t_needle = array(
+			'{id}', 
+			'{reporter}', 
+			'{handler}', 
+			'{summary}'
+		);
+		$t_repl = array(
+			$t_bug->id, 
+			urlencode(user_get_username($t_bug->reporter_id)),
+			urlencode(user_get_username($t_bug->handler_id)),
+			urlencode($t_bug->summary)
+		);
+		foreach( plugin_config_get( 'buttons', array() ) as $t_name => $t_url ) {
+			$t_url = str_replace($t_needle, $t_repl, $t_url);
+			print( '<a href="' . $t_url . '">' . $t_name . '</a>' );
+		}
+		return;
 	}
 
 }
