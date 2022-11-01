@@ -1,8 +1,12 @@
 <?php
 # :vim set noet:
 
-define(MANTIS_DIR, dirname(__FILE__) . '/../..' );
-define(MANTIS_CORE, MANTIS_DIR . '/core' );
+if( !defined( 'MANTIS_DIR' ) ) {
+	define( 'MANTIS_DIR', dirname(__FILE__) . '/../..' );
+}
+if( !defined( 'MANTIS_CORE' ) ) {
+	define( 'MANTIS_CORE', MANTIS_DIR . '/core' );
+}
 
 require_once(MANTIS_DIR . '/core.php');
 require_once( config_get( 'class_path' ) . 'MantisPlugin.class.php' );
